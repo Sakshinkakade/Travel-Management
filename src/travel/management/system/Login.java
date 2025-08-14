@@ -3,10 +3,12 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.border.*;
 import java.awt.event.*;
+import java.sql.*;
 
 public class Login extends JFrame implements ActionListener
 {
     JButton login, signup, password;
+    JTextField tfpassword, tfusername;
     
     Login()
     {
@@ -40,7 +42,7 @@ public class Login extends JFrame implements ActionListener
         lblusername.setFont(new Font("SAN SERIF", Font.PLAIN, 20));
         p2.add(lblusername);
         
-        JTextField tfusername = new JTextField();
+        tfusername = new JTextField();
         tfusername.setBounds(60, 60, 300, 30);
         tfusername.setBorder(BorderFactory.createEmptyBorder());
         p2.add(tfusername);
@@ -51,7 +53,7 @@ public class Login extends JFrame implements ActionListener
         lblpassword.setFont(new Font("SAN SERIF", Font.PLAIN, 20));
         p2.add(lblpassword);
         
-        JTextField tfpassword = new JTextField();
+        tfpassword = new JTextField();
         tfpassword.setBounds(60, 150, 300, 30);
         tfpassword.setBorder(BorderFactory.createEmptyBorder());
         p2.add(tfpassword);
@@ -96,6 +98,28 @@ public class Login extends JFrame implements ActionListener
     {
         if(ae.getSource()== login)
         {
+            try
+            {
+                String username = tfusername.getText();
+                String pass = tfpassword.getText();
+                
+                String query = "select * from account where username = '"+username+"' AND password = '"+pass+"'";
+                Conn c = new Conn();
+                ResultSet rs = c.s.executeQuery(query);
+                if(rs.next())
+                {
+                    setVisible(false);
+                    new Loading(username);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "incorrect username or password");
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
         }
         else if(ae.getSource() == signup)
         {
